@@ -1,0 +1,32 @@
+inherit clang cmake
+
+NAME="lld"
+VERSION=5.0.1
+RELEASE=1
+CATEGORY="Devel"
+SUMMARY="LLVM linker"
+DESCRIPTION="LLD is a linker from the LLVM project. That is a drop-in
+replacement for system linkers and runs much faster than them. It also
+provides features that are useful for toolchain developers. The linker
+supports ELF (Unix), PE/COFF (Windows), Mach-O (macOS) and WebAssembly."
+HOMEPAGE="http://lld.llvm.org/"
+SRC_URI="http://www.llvm.org/releases/${VERSION}/${NAME}-${VERSION}.src.tar.xz"
+SRC_DIR="${NAME}-${VERSION}.src"
+
+PKG_NAMES="lld liblld-devel"
+lld_CONTENTS="usr/bin/*"
+liblld_devel_CATEGORY="Libs"
+liblld_devel_CONTENTS="usr/include/lld/ usr/lib/liblld*"
+
+src_compile() {
+	cd ${B}
+	cygcmake -DLLVM_CONFIG=/usr/bin/llvm-config \
+		 -DLLVM_LINK_LLVM_DYLIB:BOOL=ON \
+		 -DLLVM_DYLIB_COMPONENTS=all
+	cygmake
+}
+
+src_install() {
+	cd ${B}
+	cyginstall
+}
